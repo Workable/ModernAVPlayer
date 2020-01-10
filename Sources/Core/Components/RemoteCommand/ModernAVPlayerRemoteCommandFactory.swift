@@ -69,8 +69,8 @@ public class ModernAVPlayerRemoteCommandFactory {
             }
             ModernAVPlayerLogger.instance.log(message: "Remote command: play", domain: .service)
             guard case let .stream(isLive) = media.type, isLive
-                else { self.player.play(); return .success }
-            self.player.load(media: media, autostart: true, position: nil)
+                else { self.player?.play(); return .success }
+            self.player?.load(media: media, autostart: true, position: nil)
             return .success
         }
         command.addTarget(handler: handler)
@@ -84,13 +84,14 @@ public class ModernAVPlayerRemoteCommandFactory {
         let isEnabled: (MediaType) -> Bool = { _ in true }
         let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { _ in
             ModernAVPlayerLogger.instance.log(message: "Remote command: togglePlayPause", domain: .service)
-            switch self.player.state {
+            guard let player = self.player else { return .noSuchContent }
+            switch player.state {
             case .buffering, .loading, .playing:
-                self.player.pause()
+                self.player?.pause()
             case .failed, .initialization, .waitingForNetwork:
                 return .noSuchContent
             case .loaded, .paused, .stopped:
-                self.player.play()
+                self.player?.play()
             }
             return .success
         }
@@ -108,7 +109,7 @@ public class ModernAVPlayerRemoteCommandFactory {
         }
         let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { _ in
             ModernAVPlayerLogger.instance.log(message: "Remote command: pause", domain: .service)
-            self.player.pause()
+            self.player?.pause()
             return .success
         }
         command.addTarget(handler: handler)
@@ -127,7 +128,7 @@ public class ModernAVPlayerRemoteCommandFactory {
         }
         let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { _ in
             ModernAVPlayerLogger.instance.log(message: "Remote command: stop", domain: .service)
-            self.player.stop()
+            self.player?.stop()
             return .success
         }
         command.addTarget(handler: handler)
@@ -199,7 +200,7 @@ public class ModernAVPlayerRemoteCommandFactory {
             
             let position = e.positionTime
             ModernAVPlayerLogger.instance.log(message: "Remote command: seek to \(position)", domain: .service)
-            self.player.seek(position: position)
+            self.player?.seek(position: position)
             return .success
         }
         command.addTarget(handler: handler)
@@ -217,15 +218,25 @@ public class ModernAVPlayerRemoteCommandFactory {
         command.preferredIntervals = preferredIntervals
         let isEnabled: (MediaType) -> Bool = { $0 == .clip }
         let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { event in
+<<<<<<< HEAD
             guard let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval else {
                 ModernAVPlayerLogger.instance.log(message: "Failed skipBackward remote command",
                                                   domain: .error)
                 return .commandFailed
+=======
+            guard let player = self.player else { return .commandFailed }
+            guard
+                let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval
+                else {
+                    ModernAVPlayerLogger.instance.log(message: "Failed skipBackward remote command",
+                                                      domain: .error)
+                    return .commandFailed
+>>>>>>> Fix ModernAVPlayer memory leaks
             }
             
             ModernAVPlayerLogger.instance.log(message: "Remote command: skipBackward", domain: .service)
-            let position = max(self.player.currentTime - skipTime, 0)
-            self.player.seek(position: position)
+            let position = max(player.currentTime - skipTime, 0)
+            player.seek(position: position)
             return .success
         }
         command.addTarget(handler: handler)
@@ -242,16 +253,28 @@ public class ModernAVPlayerRemoteCommandFactory {
         command.removeTarget(nil)
         command.preferredIntervals = preferredIntervals
         let isEnabled: (MediaType) -> Bool = { $0 == .clip }
+<<<<<<< HEAD
         let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { event in
             guard let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval else {
                 ModernAVPlayerLogger.instance.log(message: "Failed skipForward remote command ",
                                                   domain: .error)
                 return .commandFailed
+=======
+        let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { (event) in
+            guard let player = self.player else { return .commandFailed }
+            guard
+                let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval
+                else {
+                    ModernAVPlayerLogger.instance.log(message: "Failed skipForward remote command ",
+
+                                                      domain: .error)
+                    return .commandFailed
+>>>>>>> Fix ModernAVPlayer memory leaks
             }
             
             ModernAVPlayerLogger.instance.log(message: "Remote command: skipForward", domain: .service)
-            let position = self.player.currentTime + skipTime
-            self.player.seek(position: position)
+            let position = player.currentTime + skipTime
+            player.seek(position: position)
             return .success
         }
         command.addTarget(handler: handler)
