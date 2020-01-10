@@ -166,7 +166,7 @@ final class LoadingMediaState: PlayerState {
         case .readyToPlay:
             guard let position = self.position else { moveToLoadedState(); return }
             let seekPosition = CMTime(seconds: position, preferredTimescale: context.config.preferedTimeScale)
-            context.player.seek(to: seekPosition) { [context] completed in
+            context.player.seek(to: seekPosition, toleranceBefore: .zero, toleranceAfter: .zero) { [context] (completed) in
                 context.delegate?.playerContext(didCurrentTimeChange: context.currentTime)
                 guard completed else { return }
                 self.moveToLoadedState()
