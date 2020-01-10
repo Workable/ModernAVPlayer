@@ -76,14 +76,14 @@ struct LoadedState: PlayerState {
 
     func seek(position: Double) {
         let time = CMTime(seconds: position, preferredTimescale: context.config.preferredTimescale)
-        context.player.seek(to: time) { [context] completed in
+        context.player.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero) { [context] completed in
             guard completed else { return }
             context.delegate?.playerContext(didCurrentTimeChange: context.currentTime)
             context.nowPlaying.overrideInfoCenter(for: MPNowPlayingInfoPropertyElapsedPlaybackTime,
                                                   value: context.currentTime)
         }
     }
-
+    
     func stop() {
         context.changeState(state: StoppedState(context: context))
     }

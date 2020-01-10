@@ -168,7 +168,7 @@ final class LoadingMediaState: PlayerState {
         case .readyToPlay:
             guard let position = self.position else { moveToLoadedState(); return }
             let seekPosition = CMTime(seconds: position, preferredTimescale: context.config.preferredTimescale)
-            context.player.seek(to: seekPosition) { [weak self] completed in
+            context.player.seek(to: seekPosition, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] completed in
                 guard let strongSelf = self else { return }
                 strongSelf.context.delegate?.playerContext(didCurrentTimeChange: strongSelf.context.currentTime)
                 guard completed else { return }
