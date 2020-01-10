@@ -78,11 +78,11 @@ final class PlayingState: PlayerState {
     // MARK: - Background task
 
     private func startBgTask(context: PlayerContext) {
-        context.bgToken = UIApplication.shared.beginBackgroundTask { [context] in
-            if let token = context.bgToken {
+        context.bgToken = UIApplication.shared.beginBackgroundTask { [weak self] in
+            if let token = self?.context.bgToken {
                 UIApplication.shared.endBackgroundTask(token)
             }
-            context.bgToken = nil
+            self?.context.bgToken = nil
         }
         ModernAVPlayerLogger.instance.log(message: "StartBgTask create: \(String(describing: context.bgToken))", domain: .service)
     }
