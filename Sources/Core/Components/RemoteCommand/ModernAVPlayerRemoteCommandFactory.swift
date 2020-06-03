@@ -218,20 +218,10 @@ public class ModernAVPlayerRemoteCommandFactory {
         command.preferredIntervals = preferredIntervals
         let isEnabled: (MediaType) -> Bool = { $0 == .clip }
         let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { event in
-<<<<<<< HEAD
             guard let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval else {
                 ModernAVPlayerLogger.instance.log(message: "Failed skipBackward remote command",
                                                   domain: .error)
                 return .commandFailed
-=======
-            guard let player = self.player else { return .commandFailed }
-            guard
-                let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval
-                else {
-                    ModernAVPlayerLogger.instance.log(message: "Failed skipBackward remote command",
-                                                      domain: .error)
-                    return .commandFailed
->>>>>>> Fix ModernAVPlayer memory leaks
             }
             
             ModernAVPlayerLogger.instance.log(message: "Remote command: skipBackward", domain: .service)
@@ -253,23 +243,11 @@ public class ModernAVPlayerRemoteCommandFactory {
         command.removeTarget(nil)
         command.preferredIntervals = preferredIntervals
         let isEnabled: (MediaType) -> Bool = { $0 == .clip }
-<<<<<<< HEAD
         let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { event in
             guard let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval else {
                 ModernAVPlayerLogger.instance.log(message: "Failed skipForward remote command ",
                                                   domain: .error)
                 return .commandFailed
-=======
-        let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { (event) in
-            guard let player = self.player else { return .commandFailed }
-            guard
-                let skipTime = (event as? MPSkipIntervalCommandEvent)?.interval
-                else {
-                    ModernAVPlayerLogger.instance.log(message: "Failed skipForward remote command ",
-
-                                                      domain: .error)
-                    return .commandFailed
->>>>>>> Fix ModernAVPlayer memory leaks
             }
             
             ModernAVPlayerLogger.instance.log(message: "Remote command: skipForward", domain: .service)
