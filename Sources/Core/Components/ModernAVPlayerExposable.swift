@@ -26,4 +26,4 @@
 
 import Foundation
 
-public protocol ModernAVPlayerExposable: ModernAVPlayerCurrentState, MediaPlayer, ModernAVPlayerCurrentMedia, AnyObject {}
+public protocol ModernAVPlayerExposable: ModernAVPlayerCurrentState, MediaPlayer { }
