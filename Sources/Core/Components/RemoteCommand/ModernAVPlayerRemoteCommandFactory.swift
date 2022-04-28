@@ -61,8 +61,8 @@ public struct ModernAVPlayerRemoteCommandFactory {
     public func playCommand() -> ModernAVPlayerRemoteCommand {
         let command = commandCenter.playCommand
         let isEnabled: (MediaType) -> Bool = { _ in true }
-        let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { _ in
-            guard let media = self.player.currentMedia
+        let handler: (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus = { [weak self] _ in
+            guard let strongSelf = self, let media = strongSelf.player.currentMedia
                 else {
                     ModernAVPlayerLogger.instance.log(message: "Failed play remote command",
                                                       domain: .error)
@@ -70,8 +70,8 @@ public struct ModernAVPlayerRemoteCommandFactory {
             }
             ModernAVPlayerLogger.instance.log(message: "Remote command: play", domain: .service)
             guard case let .stream(isLive) = media.type, isLive
-                else { self.player.play(); return .success }
-            self.player.load(media: media, autostart: true, position: nil)
+                else { strongSelf.player.play(); return .success }
+            strongSelf.player.load(media: media, autostart: true, position: nil)
             return .success
         }
         command.addTarget(handler: handler)
